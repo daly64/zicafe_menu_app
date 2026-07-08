@@ -34,66 +34,56 @@ fun MenuScreen(menuData: MenuData) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(16.dp)
+            .padding(12.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Smaller Header
+            // Header
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 20.dp),
+                    .padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .weight(1f)
-                        .background(brush = Brush.horizontalGradient(listOf(Color.Transparent, CoffeeBrown.copy(alpha = 0.2f))))
-                )
+                Box(modifier = Modifier.height(1.dp).weight(1f).background(brush = Brush.horizontalGradient(listOf(Color.Transparent, CoffeeBrown.copy(alpha = 0.2f)))))
                 Text(
                     text = "MENU",
                     modifier = Modifier.padding(horizontal = 24.dp),
                     style = MaterialTheme.typography.displayLarge.copy(
                         color = CoffeeBrown,
-                        fontSize = 32.sp, // Smaller font
+                        fontSize = 28.sp,
                         fontWeight = FontWeight.ExtraLight,
                         letterSpacing = 10.sp,
                         fontFamily = FontFamily.SansSerif
                     )
                 )
-                Box(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .weight(1f)
-                        .background(brush = Brush.horizontalGradient(listOf(CoffeeBrown.copy(alpha = 0.2f), Color.Transparent)))
-                )
+                Box(modifier = Modifier.height(1.dp).weight(1f).background(brush = Brush.horizontalGradient(listOf(CoffeeBrown.copy(alpha = 0.2f), Color.Transparent))))
             }
 
-            // 2x2 Grid Layout
-            val categories = menuData.categories
-            Column(modifier = Modifier.weight(1f)) {
-                // Row 1
-                Row(modifier = Modifier.weight(1f)) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        categories.getOrNull(0)?.let { CategorySection(it) }
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Box(modifier = Modifier.weight(1f)) {
-                        categories.getOrNull(1)?.let { CategorySection(it) }
+            // Two-column layout filling full height
+            Row(modifier = Modifier.fillMaxSize()) {
+                val categories = menuData.categories
+                
+                // Column 1
+                Column(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                    if (categories.isNotEmpty()) {
+                        CategorySection(categories[0], modifier = Modifier.weight(1f))
                     }
                 }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                // Row 2
-                Row(modifier = Modifier.weight(1f)) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        categories.getOrNull(2)?.let { CategorySection(it) }
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Box(modifier = Modifier.weight(1f)) {
-                        categories.getOrNull(3)?.let { CategorySection(it) }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                // Column 2
+                Column(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                    if (categories.size > 1) {
+                        // If there are more than 2 categories total, split column 2
+                        if (categories.size > 2) {
+                            CategorySection(categories[1], modifier = Modifier.weight(1f))
+                            Spacer(modifier = Modifier.height(12.dp))
+                            CategorySection(categories[2], modifier = Modifier.weight(1f))
+                        } else {
+                            CategorySection(categories[1], modifier = Modifier.weight(1f))
+                        }
                     }
                 }
             }
@@ -103,10 +93,10 @@ fun MenuScreen(menuData: MenuData) {
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun CategorySection(category: MenuCategory) {
+fun CategorySection(category: MenuCategory, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
+            .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(LightSurface)
             .padding(16.dp)
@@ -116,7 +106,7 @@ fun CategorySection(category: MenuCategory) {
             style = MaterialTheme.typography.headlineLarge.copy(
                 color = CoffeeBrown,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp, // Smaller header
+                fontSize = 22.sp,
                 fontFamily = FontFamily.SansSerif,
                 letterSpacing = 1.sp
             )
@@ -125,7 +115,7 @@ fun CategorySection(category: MenuCategory) {
         Spacer(modifier = Modifier.height(8.dp))
         
         Column(modifier = Modifier.fillMaxWidth()) {
-            category.items.take(8).forEach { item -> // Limit items to prevent overflow in grid
+            category.items.forEach { item ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -136,7 +126,7 @@ fun CategorySection(category: MenuCategory) {
                         Text(
                             text = item.name,
                             color = TextPrimary,
-                            fontSize = 18.sp, // Responsive/Smaller font
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Normal,
                             fontFamily = FontFamily.SansSerif,
                             maxLines = 1
@@ -154,13 +144,7 @@ fun CategorySection(category: MenuCategory) {
                         }
                     }
                     
-                    Box(
-                        modifier = Modifier
-                            .weight(0.1f)
-                            .padding(start = 4.dp, end = 4.dp, bottom = 4.dp)
-                            .height(0.5.dp)
-                            .background(DividerColor)
-                    )
+                    Box(modifier = Modifier.weight(0.1f).padding(start = 4.dp, end = 4.dp, bottom = 4.dp).height(0.5.dp).background(DividerColor))
 
                     Text(
                         text = item.price,
