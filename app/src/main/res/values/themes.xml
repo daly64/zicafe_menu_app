@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.Zicafe_menu_app" parent="Theme.AppCompat.DayNight.NoActionBar" />
+</resources>
